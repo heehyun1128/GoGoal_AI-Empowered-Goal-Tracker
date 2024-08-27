@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import os
 from bson.objectid import ObjectId
 from pymongo import MongoClient
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -60,11 +61,14 @@ def create_goal():
     data = request.get_json()
     if not data or 'title' not in data:
         return jsonify({'error': 'Invalid data'}), 400
-
+    
+    now = datetime.now(datetime.UTC)
     new_goal = {
         'title': data['title'],
         'content': data.get('content', ''),
-        'status': data.get('status', 'Not Started')
+        'status': data.get('status', 'Not Started'),
+        'created_at': now,
+        'updated_at': now
     }
 
     new_record = goalCollection.insert_one(new_goal)
@@ -84,12 +88,14 @@ def edit_goal(id):
             {'$set': {
                 'title': data.get('title', ''),
                 'content': data.get('content', ''),
-                'status': data.get('status', 'Not Started')
+                'status': data.get('status', 'Not Started'),
+                'updated_at':datetime.now(datetime.UTC)
             }}
         )
-        if res.matched_count:
-            return jsonify({'message': 'Goal updated successfully'})
-        return jsonify({'error': 'Goal not found'}), 404
+        if res.matched_count==0:
+            return jsonify({'error': 'Goal not found'}), 404
+        updated_goal=goalCollection.find_one({'_id':ObjectId(id)})
+        return jsonify(serialize_goal(updated_goal))
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 

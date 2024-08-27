@@ -22,7 +22,7 @@ const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, setChanged }) =>
       return;
     }
 
-    setError(null); // Clear any previous error
+    setError(null); 
 
     try {
       const res = await axios.post('http://127.0.0.1:5000/new', {
@@ -31,15 +31,14 @@ const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, setChanged }) =>
         status: status || "Not Started",
       });
       console.log(res);
-      // Reset form state on successful submission
+      
       setTitle("");
       setContent("");
       setStatus("");
-      onClose(); // Close the modal after successful submission
-      setChanged(true)
+      onClose(); 
+      setChanged(!changed)
     } catch (error) {
       console.error("There was an error creating the goal:", error);
-      // Optionally handle error here (e.g., show an error message to the user)
     }
   };
 
@@ -69,6 +68,15 @@ const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, setChanged }) =>
           className="bg-white rounded-lg border border-slate-500 p-2 w-full mb-4"
           rows={4}
         />
+        <select
+              value={status}
+              onChange={e=>setStatus(e.target.value)}
+              className="w-full mb-4 max-w-56 py-2 bg-gray-100 border rounded-lg cursor-pointer"
+            >
+              <option value="Not Started">Not Started</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
         <div className="flex justify-end gap-4 bg-white">
           <button
             onClick={()=>{

@@ -6,6 +6,8 @@ type GoalCardProps = {
   initialTitle: string;
   initialContent: string;
   initialStatus: string;
+  updatedAt:string;
+  createdAt:string;
   onStatusChange: (updatedGoal: {
     _id: string;
     title: string;
@@ -20,6 +22,9 @@ const GoalCard: React.FC<GoalCardProps> = ({
   initialContent,
   initialStatus,
   onStatusChange,
+  updatedAt,
+createdAt
+  
 }) => {
   const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState(initialContent);
@@ -64,6 +69,7 @@ const GoalCard: React.FC<GoalCardProps> = ({
   const handleSubmit = async () => {
     try {
       setIsSubmitted(true);
+      
       const updatedGoal = await axios.put(`http://127.0.0.1:5000/${id}`, {
         title,
         content,
@@ -92,6 +98,7 @@ const GoalCard: React.FC<GoalCardProps> = ({
   const handleCardClick = () => {
     if (!isCardClicked) {
       setIsCardClicked(true);
+      setIsSubmitted(false);
     }
   };
 
@@ -104,28 +111,28 @@ const GoalCard: React.FC<GoalCardProps> = ({
 
   return (
     <div
-      className="bg-white shadow-md rounded-lg p-6 m-4"
+      className="bg-white shadow-md rounded-lg p-6 m-4 cursor-pointer"
       style={{ width: "26vw", minHeight: "260px" }}
       onClick={handleCardClick}
       onBlur={handleCardBlur}
       tabIndex={-1}
     >
       <div className="mb-4 bg-white">
-        <div className="bg-white flex justify-between">
+        <div className="bg-white flex justify-between items-center mb-6">
           {isCardClicked ? (
             <select
               value={status}
               onChange={handleStatusChange}
-              className="w-full mb-4 max-w-56 bg-gray-100 border rounded-lg"
+              className="w-full mb-4 max-w-56 py-2 bg-gray-100 border rounded-lg cursor-pointer"
             >
               <option value="Not Started">Not Started</option>
               <option value="In Progress">In Progress</option>
               <option value="Completed">Completed</option>
             </select>
           ) : (
-            <div className="bg-white  flex">
+            <div className="bg-white  flex ">
               <p
-                className="bg-white mb-4  cursor-pointer"
+                className="bg-white cursor-pointer p-0 m-0"
                
               >
                 {status}
@@ -133,8 +140,8 @@ const GoalCard: React.FC<GoalCardProps> = ({
             </div>
           )}
           {
-            <button onClick={()=>{
-                setIsCardClicked(false)
+            <button onClick={(e)=>{
+              e.stopPropagation();
                 handleDelete()}}>
               <i
                 style={{ color: "#a8585e" }}
@@ -145,7 +152,7 @@ const GoalCard: React.FC<GoalCardProps> = ({
         </div>
         {isCardClicked ? (
           <input
-            className="bg-white w-full text-2xl font-bold  border-b-2 border-gray-300 focus:outline-none"
+            className="bg-white w-full text-xl font-bold  border-b-2 border-gray-300 focus:outline-none"
             type="text"
             value={title}
            
@@ -154,7 +161,7 @@ const GoalCard: React.FC<GoalCardProps> = ({
           />
         ) : (
           <h2
-            className="bg-white text-2xl  font-bold cursor-pointer"
+            className="bg-white text-xl  font-bold cursor-pointer"
             onClick={handleTitleClick}
             style={{ maxWidth: "100%", wordBreak: "break-word" }}
           >
@@ -187,6 +194,9 @@ const GoalCard: React.FC<GoalCardProps> = ({
               {content}
             </p>
           )}
+        </div>
+        <div>
+          <p>{updatedAt?updatedAt:createdAt}</p>
         </div>
       </div>
       <div className="bg-white">
