@@ -5,8 +5,16 @@ import GoalModal from "./GoalModal";
 import axios from "axios";
 import GoalCard from "./GoalCard";
 
+interface Goal {
+  _id: string;
+  title: string;
+  content: string;
+  status: string;
+}
+
+
 const Goal = () => {
-  const [goals, setGoals] = useState([]);
+  const [goals, setGoals] = useState<Goal[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [changed, setChanged] = useState(false);
 
@@ -33,7 +41,7 @@ const Goal = () => {
     setModalOpen(false);
   };
 
-  const updateGoalStatus = (updatedGoal) => {
+  const updateGoalStatus = (updatedGoal:Goal) => {
     setGoals((prevGoals) =>
       prevGoals.map((goal) =>
         goal._id === updatedGoal._id ? updatedGoal : goal
