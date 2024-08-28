@@ -1,24 +1,28 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import GoalModal from "./GoalModal";
 import axios from "axios";
 import GoalCard from "./GoalCard";
+import Typed from "typed.js";
 
 interface Goal {
   _id: string;
   title: string;
   content: string;
   status: string;
-  updated_at:string;
-created_at:string;
+  updated_at: string;
+  created_at: string;
 }
 
 const Goal = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [changed, setChanged] = useState(false);
+  const [quote, setQuote] = useState("");
+  
 
+  const el = useRef(null);
   const fetchGoals = async () => {
     try {
       const res = await axios.get("http://127.0.0.1:5000");
@@ -29,13 +33,33 @@ const Goal = () => {
       console.error("Error fetching goals:", err);
     }
   };
+  const generateQuote = async () => {
+    const quote = await axios.post("/api/quote");
+    console.log(quote.data.quote);
+    setQuote(quote.data.quote);
+  };
+
+  useEffect(() => {
+    const typed = new Typed(el.current, {
+      strings: [`${quote}`, ],
+      typeSpeed: 50,
+      loop: false,
+      
+    })
+
+    return () => {
+      typed.destroy();
+    };
+  }, [quote]);
+
   useEffect(() => {
     fetchGoals();
+    generateQuote();
   }, [changed]);
 
   const addGoal = () => {
     setModalOpen(true);
-    setChanged(!changed)
+    setChanged(!changed);
   };
 
   const closeModal = () => {
@@ -52,27 +76,33 @@ const Goal = () => {
   };
 
   return (
-    <div className="w-screen p-20">
-      <div className="flex justify-start">
-        {/* <h1 className="text-2xl">All Goals</h1> */}
-      </div>
-      <button
-        className="px-6 py-2 rounded-lg flex items-center justify-center text-black mb-8 fade-in-bottom "
-        style={{ backgroundColor: "black" }}
-        onClick={addGoal}
-      >
-        <p
-          className="mr-4"
-          style={{ backgroundColor: "black", color: "white" }}
+    <div className="w-screen p-5 lg:p-20">
+      <div className="flex flex-col sm:flex-row justify-between ">
+        <button
+          className="px-6 py-2 rounded-lg flex items-center justify-center text-black mb-8 fade-in-bottom mr-6 "
+          style={{ backgroundColor: "black", height: "40px" }}
+          onClick={addGoal}
         >
-          Create Goal
-        </p>
-        <i
-          className="fa-solid fa-pen"
-          style={{ backgroundColor: "black", color: "white" }}
-        ></i>
-      </button>
-      <div className="flex">
+          <p
+            className="mr-4 hidden  lg:block"
+            style={{ backgroundColor: "black", color: "white" }}
+          >
+            Create Goal
+          </p>
+          <i
+            className="fa-solid fa-pen"
+            style={{ backgroundColor: "black", color: "white" }}
+          ></i>
+        </button>
+
+        <div className="m-0 p-0 flex justify-end w-[90vw] lg:w-[50vw] mb-10" style={{ height: "fit-content" }}>
+  <h1 className="text-md" ref={el}></h1>
+</div>
+
+      </div>
+
+      <div className="flex flex-col sm:flex-row ">
+
         <div className="custom-card text-focus-in">
           <h1 className="rounded p-4 shadow-md bg-red-400 ">Not Started</h1>
           {goals?.length ? (

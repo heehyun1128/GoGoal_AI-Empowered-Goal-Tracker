@@ -109,8 +109,8 @@ const GoalCard: React.FC<GoalCardProps> = ({
 
   return (
     <div
-      className="bg-white shadow-md rounded-lg p-6 m-4 cursor-pointer"
-      style={{ width: "26vw", minHeight: "260px" }}
+    className="bg-white shadow-md rounded-lg p-6 m-4 cursor-pointer w-[80vw] sm:w-[26vw]"
+    style={{ minHeight: "260px" }}
       onClick={handleCardClick}
       // onBlur={handleCardBlur}
       tabIndex={-1}
@@ -130,6 +130,7 @@ const GoalCard: React.FC<GoalCardProps> = ({
           ) : (
             <div className="bg-white  flex ">
               <p className="bg-white cursor-pointer p-0 m-0">{status}</p>
+              
             </div>
           )}
           {
