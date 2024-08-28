@@ -66,7 +66,7 @@ const Goal = () => {
     setModalOpen(false);
   };
 
-  const updateGoalStatus = (updatedGoal: Goal) => {
+  const updateGoalStatus = (updatedGoal: any) => {
     setGoals((prevGoals) =>
       prevGoals.map((goal) =>
         goal._id === updatedGoal._id ? updatedGoal : goal
@@ -149,7 +149,7 @@ const Goal = () => {
               <h2 className="bg-transparent">
                 You currently have no goals in progress.
               </h2>
-              <h2 className="bg-transparent">Let's start a new one today!</h2>
+              <h2 className="bg-transparent">Let&apos; start a new one today!</h2>
             </div>
           )}
         </div>
