@@ -6,8 +6,8 @@ type GoalCardProps = {
   initialTitle: string;
   initialContent: string;
   initialStatus: string;
-  updatedAt:string;
-  createdAt:string;
+  updated_at: string;
+  created_at: string;
   onStatusChange: (updatedGoal: {
     _id: string;
     title: string;
@@ -22,9 +22,8 @@ const GoalCard: React.FC<GoalCardProps> = ({
   initialContent,
   initialStatus,
   onStatusChange,
-  updatedAt,
-createdAt
-  
+  updated_at,
+  created_at,
 }) => {
   const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState(initialContent);
@@ -33,15 +32,15 @@ createdAt
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isCardClicked, setIsCardClicked] = useState(false);
 
-  const handleTitleClick = () => {
-    setIsSubmitted(false);
-    setIsCardClicked(true);
-  };
+  // const handleTitleClick = () => {
+  //   setIsSubmitted(false);
+  //   setIsCardClicked(true);
+  // };
 
-  const handleContentClick = () => {
-    setIsSubmitted(false);
-    setIsCardClicked(true);
-  };
+  // const handleContentClick = () => {
+  //   setIsSubmitted(false);
+  //   setIsCardClicked(true);
+  // };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setTitle(e.target.value);
@@ -50,15 +49,14 @@ createdAt
     setContent(e.target.value);
 
   const handleDelete = async () => {
-    setIsCardClicked(false)
+    setIsCardClicked(false);
     try {
-
       await axios.delete(`http://127.0.0.1:5000/${id}`);
       onStatusChange({
-        _id:id,
-        title:"",
-        content:"",
-        status:"",
+        _id: id,
+        title: "",
+        content: "",
+        status: "",
       });
       alert("Goal deleted successfully");
     } catch (error) {
@@ -69,7 +67,7 @@ createdAt
   const handleSubmit = async () => {
     try {
       setIsSubmitted(true);
-      
+
       const updatedGoal = await axios.put(`http://127.0.0.1:5000/${id}`, {
         title,
         content,
@@ -102,22 +100,22 @@ createdAt
     }
   };
 
-  const handleCardBlur = (e: React.FocusEvent<HTMLDivElement>) => {
-    if (!e.currentTarget.contains(e.relatedTarget)) {
-      setIsCardClicked(false);
-      handleCancel();
-    }
-  };
+  // const handleCardBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+  //   if (!e.currentTarget.contains(e.relatedTarget)) {
+  //     setIsCardClicked(false);
+  //     handleCancel();
+  //   }
+  // };
 
   return (
     <div
       className="bg-white shadow-md rounded-lg p-6 m-4 cursor-pointer"
       style={{ width: "26vw", minHeight: "260px" }}
       onClick={handleCardClick}
-      onBlur={handleCardBlur}
+      // onBlur={handleCardBlur}
       tabIndex={-1}
     >
-      <div className="mb-4 bg-white">
+      <div className="mb-4 bg-white"  style={{  minHeight: "200px" }}>
         <div className="bg-white flex justify-between items-center mb-6">
           {isCardClicked ? (
             <select
@@ -131,18 +129,16 @@ createdAt
             </select>
           ) : (
             <div className="bg-white  flex ">
-              <p
-                className="bg-white cursor-pointer p-0 m-0"
-               
-              >
-                {status}
-              </p>
+              <p className="bg-white cursor-pointer p-0 m-0">{status}</p>
             </div>
           )}
           {
-            <button onClick={(e)=>{
-              e.stopPropagation();
-                handleDelete()}}>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete();
+              }}
+            >
               <i
                 style={{ color: "#a8585e" }}
                 className="fa-solid fa-trash fa-xl  "
@@ -155,14 +151,13 @@ createdAt
             className="bg-white w-full text-xl font-bold  border-b-2 border-gray-300 focus:outline-none"
             type="text"
             value={title}
-           
             onChange={handleTitleChange}
             autoFocus
           />
         ) : (
           <h2
             className="bg-white text-xl  font-bold cursor-pointer"
-            onClick={handleTitleClick}
+            // onClick={handleTitleClick}
             style={{ maxWidth: "100%", wordBreak: "break-word" }}
           >
             {title}
@@ -182,21 +177,17 @@ createdAt
               className="bg-white w-full mt-2  border-b-2 border-gray-300 focus:outline-none"
               value={content}
               onChange={handleContentChange}
-            
               autoFocus
             />
           ) : (
             <p
               className="bg-white mt-2  text-gray-700 cursor-pointer"
-              onClick={handleContentClick}
+              // onClick={handleContentClick}
               style={{ wordBreak: "break-word" }}
             >
               {content}
             </p>
           )}
-        </div>
-        <div>
-          <p>{updatedAt?updatedAt:createdAt}</p>
         </div>
       </div>
       <div className="bg-white">
@@ -217,6 +208,13 @@ createdAt
           </>
         )}
       </div>
+      {!isCardClicked ?(
+        <div className="flex justify-end bottom-1 bg-white ">
+          <p className="bg-white text-sm p-0 m-0">
+            {updated_at ? updated_at : created_at}
+          </p>
+        </div>
+      ):<></>}
     </div>
   );
 };

@@ -6,9 +6,10 @@ interface GoalModalProps {
   isOpen: boolean;
   onClose: () => void;
   setChanged: (changed: boolean) => void;
+  changed:boolean;
 }
 
-const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, setChanged }) => {
+const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, setChanged, changed }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [status, setStatus] = useState("");

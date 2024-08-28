@@ -53,6 +53,7 @@ def get_goal(id):
 @app.route('/', methods=['GET'])
 def get_all_goals():
     goals = list(goalCollection.find())
+    print('goals',goals )
     return jsonify([serialize_goal(goal) for goal in goals])
 
 # Create a goal
@@ -62,7 +63,7 @@ def create_goal():
     if not data or 'title' not in data:
         return jsonify({'error': 'Invalid data'}), 400
     
-    now = datetime.now(datetime.UTC)
+    now = datetime.now()
     new_goal = {
         'title': data['title'],
         'content': data.get('content', ''),
@@ -70,7 +71,7 @@ def create_goal():
         'created_at': now,
         'updated_at': now
     }
-
+    print("new",new_goal)
     new_record = goalCollection.insert_one(new_goal)
     new_goal['_id'] = str(new_record.inserted_id)
     return jsonify(new_goal), 201
@@ -89,7 +90,7 @@ def edit_goal(id):
                 'title': data.get('title', ''),
                 'content': data.get('content', ''),
                 'status': data.get('status', 'Not Started'),
-                'updated_at':datetime.now(datetime.UTC)
+                'updated_at':datetime.now()
             }}
         )
         if res.matched_count==0:

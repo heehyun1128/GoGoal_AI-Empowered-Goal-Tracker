@@ -10,8 +10,8 @@ interface Goal {
   title: string;
   content: string;
   status: string;
-  updatedAt:string;
-createdAt:string;
+  updated_at:string;
+created_at:string;
 }
 
 const Goal = () => {
@@ -85,8 +85,8 @@ const Goal = () => {
                   initialTitle={goal.title}
                   initialContent={goal.content}
                   initialStatus={goal.status}
-                  updatedAt={goal?.updated_at}
-                  createdAt={goal?.created_at}
+                  updated_at={goal?.updated_at}
+                  created_at={goal?.created_at}
                   onStatusChange={updateGoalStatus}
                 />
               ))
@@ -110,8 +110,8 @@ const Goal = () => {
                   initialContent={goal?.content}
                   initialStatus={goal?.status}
                   onStatusChange={updateGoalStatus}
-                  updatedAt={goal?.updated_at}
-                  createdAt={goal?.created_at}
+                  updated_at={goal?.updated_at}
+                  created_at={goal?.created_at}
                 />
               ))
           ) : (
@@ -135,8 +135,8 @@ const Goal = () => {
                   initialTitle={goal?.title}
                   initialContent={goal?.content}
                   initialStatus={goal?.status}
-                  updatedAt={goal?.updated_at}
-                  createdAt={goal?.created_at}
+                  updated_at={goal?.updated_at}
+                  created_at={goal?.created_at}
                   onStatusChange={updateGoalStatus}
                 />
               ))
@@ -156,6 +156,7 @@ const Goal = () => {
         isOpen={modalOpen}
         onClose={closeModal}
         setChanged={setChanged}
+        changed={changed}
       />
     </div>
   );
