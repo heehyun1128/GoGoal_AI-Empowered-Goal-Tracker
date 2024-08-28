@@ -13,6 +13,7 @@ const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, setChanged, chan
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [status, setStatus] = useState("");
+  const [dueDate, setDueDate] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   if (!isOpen) return null;
@@ -26,16 +27,19 @@ const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, setChanged, chan
     setError(null); 
 
     try {
+     
       const res = await axios.post('http://127.0.0.1:5000/new', {
         title,
         content,
         status: status || "Not Started",
+        due_date: dueDate || "No Due Date"
       });
       console.log(res);
       
       setTitle("");
       setContent("");
       setStatus("");
+      setDueDate("")
       onClose(); 
       setChanged(!changed)
     } catch (error) {
@@ -54,6 +58,7 @@ const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, setChanged, chan
       >
         <h2 className="text-xl mb-4 bg-white">Create New Goal</h2>
         {error && <p className="text-red-500 mb-4">{error}</p>}
+        
         <input
           value={title}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
@@ -69,6 +74,14 @@ const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, setChanged, chan
           className="bg-white rounded-lg border border-slate-500 p-2 w-full mb-4"
           rows={4}
         />
+        <input
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+          type="text"
+          placeholder="Due Date"
+       
+          className="bg-white rounded-lg border border-slate-500 p-2 w-full mb-4"
+        />
         <select
               value={status}
               onChange={e=>setStatus(e.target.value)}
@@ -78,6 +91,7 @@ const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, setChanged, chan
               <option value="In Progress">In Progress</option>
               <option value="Completed">Completed</option>
             </select>
+            
         <div className="flex justify-end gap-4 bg-white">
           <button
             onClick={()=>{
