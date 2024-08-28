@@ -1,3 +1,13 @@
+## GoGoal
+Goal Tracker with AI motivational quotes
+
+- FRONT-END: 
+    
+    NextJS (React), JavaScript, Tailwind CSS
+
+- BACK-END: 
+    
+    Python, Flask, Pymongo, MongoDB, OpenAI, NextJS
 
 ## Deploy on Vercel
 
