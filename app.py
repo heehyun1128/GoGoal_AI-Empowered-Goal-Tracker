@@ -16,7 +16,7 @@ load_dotenv()
 
 # client = MongoClient(os.getenv("MONGODB_URL"))
 client = MongoClient(os.getenv("MONGODB_URL"), 
-                    #  tls=True, tlsAllowInvalidCertificates=True
+                     tls=True, tlsAllowInvalidCertificates=True
                      )
 
 print("client",client)
