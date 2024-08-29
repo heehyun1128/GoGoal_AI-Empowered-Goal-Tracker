@@ -50,7 +50,7 @@ const GoalCard: React.FC<GoalCardProps> = ({
   const handleDelete = async () => {
     setIsCardClicked(false);
     try {
-      await axios.delete(`https://goal-tracker-seven.vercel.app/${id}`);
+      await axios.delete(`http://127.0.0.1:5000/${id}`);
       onStatusChange({
         _id: id,
         title: "",
@@ -87,7 +87,7 @@ const GoalCard: React.FC<GoalCardProps> = ({
     try {
       setIsSubmitted(true);
       // update goal
-      const updatedGoal = await axios.put(`https://goal-tracker-seven.vercel.app/${id}`, {
+      const updatedGoal = await axios.put(`http://127.0.0.1:5000/${id}`, {
         title,
         content,
         status,
