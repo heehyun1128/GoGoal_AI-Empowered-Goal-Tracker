@@ -1,8 +1,10 @@
-## GoGoal
-See live on:
-    https://goal-tracker-seven.vercel.app/
-    
-Goal Tracker with AI motivational quotes
+# GoGoal: AI-empowered Goal Tracker 
+
+## See live on
+
+- https://goal-tracker-seven.vercel.app/
+
+## Technologies Used
 
 - FRONT-END: 
     
