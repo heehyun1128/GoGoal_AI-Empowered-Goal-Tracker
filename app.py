@@ -15,7 +15,9 @@ load_dotenv()
 
 
 # client = MongoClient(os.getenv("MONGODB_URL"))
-client = MongoClient(os.getenv("MONGODB_URL"), tls=True, tlsAllowInvalidCertificates=True)
+client = MongoClient(os.getenv("MONGODB_URL"), 
+                     tls=True, tlsAllowInvalidCertificates=True
+                     )
 
 print("client",client)
 # app.config["MONGO_URI"] = os.getenv("MONGODB_URL")
@@ -68,6 +70,7 @@ def create_goal():
         'title': data['title'],
         'content': data.get('content', ''),
         'status': data.get('status', 'Not Started'),
+        'due_date':data.get('due_date','No due date'),
         'created_at': now,
         'updated_at': now
     }
@@ -90,6 +93,7 @@ def edit_goal(id):
                 'title': data.get('title', ''),
                 'content': data.get('content', ''),
                 'status': data.get('status', 'Not Started'),
+                'due_date':data.get('due_date','No due date'),
                 'updated_at':datetime.now()
             }}
         )

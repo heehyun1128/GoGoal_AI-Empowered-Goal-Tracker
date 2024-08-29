@@ -21,6 +21,13 @@
   border-radius: 1rem;
 }
 
+@media (max-width: 640px) { 
+  .custom-card {
+    width: 85vw; 
+    margin-right: 0;
+  }
+}
+
 .goal-card-container {
   position: relative;
   width: 26vw;
@@ -157,6 +164,35 @@
   }
 }
 @keyframes text-focus-in {
+  0% {
+    -webkit-filter: blur(12px);
+            filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-filter: blur(0px);
+            filter: blur(0px);
+    opacity: 1;
+  }
+}
+.text-focus-in2 {
+	-webkit-animation: text-focus-in 0.08s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+	        animation: text-focus-in 0.08s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+}
+
+@-webkit-keyframes text-focus-in2 {
+  0% {
+    -webkit-filter: blur(12px);
+            filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-filter: blur(0px);
+            filter: blur(0px);
+    opacity: 1;
+  }
+}
+@keyframes text-focus-in2 {
   0% {
     -webkit-filter: blur(12px);
             filter: blur(12px);

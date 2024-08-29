@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
-const systemPrompt = `You are a motivational quote generator. Your task is to create one sentence or maximum of three sentences of motivational quotes
-for the user to achive or set up a goal
-
-
+const systemPrompt = `Please analyze user prompts and respond to the users
 `;
 
 export async function POST(req: Request) {
@@ -24,7 +21,7 @@ export async function POST(req: Request) {
 
     // Call OpenAI API
     const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: data || "" },

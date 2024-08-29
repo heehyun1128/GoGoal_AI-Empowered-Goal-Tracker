@@ -6,12 +6,14 @@ type GoalCardProps = {
   initialTitle: string;
   initialContent: string;
   initialStatus: string;
+  initialDueDate: string;
   updated_at: string;
   created_at: string;
   onStatusChange: (updatedGoal: {
     _id: string;
     title: string;
     content: string;
+    due_date: string;
     status: string;
   }) => void;
 };
@@ -21,6 +23,7 @@ const GoalCard: React.FC<GoalCardProps> = ({
   initialTitle,
   initialContent,
   initialStatus,
+  initialDueDate,
   onStatusChange,
   updated_at,
   created_at,
@@ -28,19 +31,15 @@ const GoalCard: React.FC<GoalCardProps> = ({
   const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState(initialContent);
   const [status, setStatus] = useState(initialStatus);
+  const [dueDate, setDueDate] = useState(initialDueDate);
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isCardClicked, setIsCardClicked] = useState(false);
-
-  // const handleTitleClick = () => {
-  //   setIsSubmitted(false);
-  //   setIsCardClicked(true);
-  // };
-
-  // const handleContentClick = () => {
-  //   setIsSubmitted(false);
-  //   setIsCardClicked(true);
-  // };
+  const [error, setError] = useState<{
+    title?: string;
+    dueDate?: string;
+  } | null>(null);
+ 
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setTitle(e.target.value);
@@ -56,26 +55,47 @@ const GoalCard: React.FC<GoalCardProps> = ({
         _id: id,
         title: "",
         content: "",
+        due_date: "",
         status: "",
       });
-      alert("Goal deleted successfully");
+      // alert("Goal deleted successfully");
     } catch (error) {
       console.error("There was an error deleting the goal:", error);
     }
   };
 
   const handleSubmit = async () => {
+    let hasError = false;
+    let newError: { title?: string; dueDate?: string } = {};
+    if (!title) {
+      newError.title = "Title is required";
+      hasError = true;
+    }
+    const regex = /^\d{2}-\d{2}-\d{4}$/;
+
+    if (dueDate!=="No Due Date" && !regex.test(dueDate) ) {
+      newError.dueDate = "Date should be in MM-DD-YYYY format";
+      hasError = true;
+    }
+
+    if (hasError) {
+      setError(newError);
+      return;
+    }
+
+    setError(null);
     try {
       setIsSubmitted(true);
-
+      
       const updatedGoal = await axios.put(`http://127.0.0.1:5000/${id}`, {
         title,
         content,
         status,
+        due_date: dueDate,
       });
       onStatusChange(updatedGoal.data);
       setIsCardClicked(false);
-      alert("Goal updated successfully");
+      // alert("Goal updated successfully");
     } catch (error) {
       console.error("There was an error updating the goal:", error);
     }
@@ -85,6 +105,7 @@ const GoalCard: React.FC<GoalCardProps> = ({
     setTitle(initialTitle);
     setContent(initialContent);
     setStatus(initialStatus);
+    setDueDate(initialDueDate);
     setIsCardClicked(false);
     setIsSubmitted(false);
   };
@@ -100,22 +121,40 @@ const GoalCard: React.FC<GoalCardProps> = ({
     }
   };
 
-  // const handleCardBlur = (e: React.FocusEvent<HTMLDivElement>) => {
-  //   if (!e.currentTarget.contains(e.relatedTarget)) {
-  //     setIsCardClicked(false);
-  //     handleCancel();
-  //   }
-  // };
+ 
 
   return (
     <div
-    className="bg-white shadow-md rounded-lg p-6 m-4 cursor-pointer w-[80vw] sm:w-[26vw]"
-    style={{ minHeight: "260px" }}
+      className="bg-white shadow-md rounded-lg p-6 m-4 cursor-pointer w-[80vw] sm:w-[26vw]"
+      style={{ minHeight: "260px" }}
       onClick={handleCardClick}
-      // onBlur={handleCardBlur}
+    
       tabIndex={-1}
     >
-      <div className="mb-4 bg-white"  style={{  minHeight: "200px" }}>
+      <div className="mb-4 bg-white" style={{ minHeight: "200px" }}>
+        {isCardClicked ? (
+          <div className="bg-white">
+          <div className="flex bg-white justify-between mb-6 ">
+            <p className="p-0 m-0 bg-white">Due Date: </p>
+            <input
+              className="bg-white w-60 text-sm border-b-2 border-gray-300 focus:outline-none "
+              type="text"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+              autoFocus
+              placeholder="MM-DD-YYYY"
+            />
+          </div>
+            {error && error.dueDate && (
+          <p className="bg-white text-red-500 mb-4">{`Error: ${error.dueDate}`}</p>
+        )}
+          </div>
+        ) : (
+          <div className="bg-white  flex justify-end items-center mb-6">
+            <p className="font-bold bg-white">Due on</p>
+            <p className="bg-white cursor-pointer p-0 m-0 text-sm">{`: ${dueDate}`}</p>
+          </div>
+        )}
         <div className="bg-white flex justify-between items-center mb-6">
           {isCardClicked ? (
             <select
@@ -130,9 +169,9 @@ const GoalCard: React.FC<GoalCardProps> = ({
           ) : (
             <div className="bg-white  flex ">
               <p className="bg-white cursor-pointer p-0 m-0">{status}</p>
-              
             </div>
           )}
+
           {
             <button
               onClick={(e) => {
@@ -163,6 +202,9 @@ const GoalCard: React.FC<GoalCardProps> = ({
           >
             {title}
           </h2>
+        )}
+        {error && error.title && (
+          <p className="bg-white text-red-500 mb-4">{`Error: ${error.title}`}</p>
         )}
         <div
           className="bg-white"
@@ -209,13 +251,17 @@ const GoalCard: React.FC<GoalCardProps> = ({
           </>
         )}
       </div>
-      {!isCardClicked ?(
+      {!isCardClicked ? (
         <div className="flex justify-end bottom-1 bg-white ">
           <p className="bg-white text-sm p-0 m-0">
-            {updated_at ? updated_at : created_at}
+            {updated_at
+              ? `updated at: ${updated_at.slice(5, -7)}`
+              : `created at ${created_at.slice(5, -7)}`}
           </p>
         </div>
-      ):<></>}
+      ) : (
+        <></>
+      )}
     </div>
   );
 };
