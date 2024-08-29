@@ -74,7 +74,7 @@ const GoalModal: React.FC<GoalModalProps> = ({
       className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 text-focus-in2"
       style={{ zIndex: 50 }}
     >
-      <div className="bg-white p-6 rounded-lg w-1/3" style={{ zIndex: 100 }}>
+      <div className="bg-white p-6 rounded-lg md:w-1/3 sm:w-[90vw]" style={{ zIndex: 100 }}>
         <h2 className="text-xl mb-4 bg-white">Create New Goal</h2>
         {error && error.title && (
           <p className="bg-white text-red-500 mb-4">{`Error: ${error.title}`}</p>

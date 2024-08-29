@@ -21,6 +21,12 @@
   border-radius: 1rem;
 }
 
+@media (max-width: 640px) { /* Adjust the max-width as needed */
+  .custom-card {
+    width: 90vw; /* Override width for small screens */
+  }
+}
+
 .goal-card-container {
   position: relative;
   width: 26vw;
