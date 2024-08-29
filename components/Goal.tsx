@@ -179,12 +179,18 @@ for the user to achive or set up a goal`
         style={{ backgroundColor: "black", height: "40px" }}
         onClick={seeListView}
       >
-        <p
+       {!listView && <p
           className="mr-4 hidden  lg:block"
           style={{ backgroundColor: "black", color: "white" }}
         >
           List View
-        </p>
+        </p>}
+       {listView && <p
+          className="mr-4 hidden  lg:block"
+          style={{ backgroundColor: "black", color: "white" }}
+        >
+          Card View
+        </p>}
         <div className="bg-black p-1 ">
         <i className="fa-solid bg-black text-white  fa-list"></i>
         </div>
