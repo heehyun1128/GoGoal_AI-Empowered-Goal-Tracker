@@ -21,9 +21,10 @@
   border-radius: 1rem;
 }
 
-@media (max-width: 640px) { /* Adjust the max-width as needed */
+@media (max-width: 640px) { 
   .custom-card {
-    width: 90vw; /* Override width for small screens */
+    width: 85vw; 
+    margin-right: 0;
   }
 }
 

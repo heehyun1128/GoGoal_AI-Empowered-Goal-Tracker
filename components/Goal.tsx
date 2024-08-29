@@ -138,7 +138,7 @@ for the user to achive or set up a goal`
   };
 
   return (
-    <div className="w-screen p-5 lg:p-20">
+    <div className="w-screen p-2 lg:p-20">
       <div className="flex flex-col sm:flex-row justify-between ">
         <button
           className="px-6 py-2 rounded-lg flex items-center justify-center text-black mb-8 fade-in-bottom mr-6"
