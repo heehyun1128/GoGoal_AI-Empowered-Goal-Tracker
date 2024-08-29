@@ -23,3 +23,9 @@ Get your API keys from MongoDB and OpenAI and paste the following Environmental 
 - MONGODB_URL=your mongodb connection key
 
 - OPENAI_API_KEY=your open ai key
+
+## AI Features
+
+- Generate motivational quotes
+
+- List goals that are due today

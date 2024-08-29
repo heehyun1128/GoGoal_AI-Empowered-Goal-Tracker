@@ -35,16 +35,11 @@ const GoalCard: React.FC<GoalCardProps> = ({
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isCardClicked, setIsCardClicked] = useState(false);
-
-  // const handleTitleClick = () => {
-  //   setIsSubmitted(false);
-  //   setIsCardClicked(true);
-  // };
-
-  // const handleContentClick = () => {
-  //   setIsSubmitted(false);
-  //   setIsCardClicked(true);
-  // };
+  const [error, setError] = useState<{
+    title?: string;
+    dueDate?: string;
+  } | null>(null);
+ 
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setTitle(e.target.value);
@@ -70,9 +65,28 @@ const GoalCard: React.FC<GoalCardProps> = ({
   };
 
   const handleSubmit = async () => {
+    let hasError = false;
+    let newError: { title?: string; dueDate?: string } = {};
+    if (!title) {
+      newError.title = "Title is required";
+      hasError = true;
+    }
+    const regex = /^\d{2}-\d{2}-\d{4}$/;
+
+    if (!regex.test(dueDate)) {
+      newError.dueDate = "Date should be in MM-DD-YYYY format";
+      hasError = true;
+    }
+
+    if (hasError) {
+      setError(newError);
+      return;
+    }
+
+    setError(null);
     try {
       setIsSubmitted(true);
-
+      
       const updatedGoal = await axios.put(`http://127.0.0.1:5000/${id}`, {
         title,
         content,
@@ -107,23 +121,19 @@ const GoalCard: React.FC<GoalCardProps> = ({
     }
   };
 
-  // const handleCardBlur = (e: React.FocusEvent<HTMLDivElement>) => {
-  //   if (!e.currentTarget.contains(e.relatedTarget)) {
-  //     setIsCardClicked(false);
-  //     handleCancel();
-  //   }
-  // };
+ 
 
   return (
     <div
       className="bg-white shadow-md rounded-lg p-6 m-4 cursor-pointer w-[80vw] sm:w-[26vw]"
       style={{ minHeight: "260px" }}
       onClick={handleCardClick}
-      // onBlur={handleCardBlur}
+    
       tabIndex={-1}
     >
       <div className="mb-4 bg-white" style={{ minHeight: "200px" }}>
         {isCardClicked ? (
+          <div className="bg-white">
           <div className="flex bg-white justify-between mb-6 ">
             <p className="p-0 m-0 bg-white">Due Date: </p>
             <input
@@ -132,7 +142,12 @@ const GoalCard: React.FC<GoalCardProps> = ({
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
               autoFocus
+              placeholder="MM-DD-YYYY"
             />
+          </div>
+            {error && error.dueDate && (
+          <p className="bg-white text-red-500 mb-4">{`Error: ${error.dueDate}`}</p>
+        )}
           </div>
         ) : (
           <div className="bg-white  flex justify-end items-center mb-6">
@@ -188,6 +203,9 @@ const GoalCard: React.FC<GoalCardProps> = ({
             {title}
           </h2>
         )}
+        {error && error.title && (
+          <p className="bg-white text-red-500 mb-4">{`Error: ${error.title}`}</p>
+        )}
         <div
           className="bg-white"
           style={{
@@ -236,7 +254,9 @@ const GoalCard: React.FC<GoalCardProps> = ({
       {!isCardClicked ? (
         <div className="flex justify-end bottom-1 bg-white ">
           <p className="bg-white text-sm p-0 m-0">
-            {updated_at ? `updated at: ${updated_at.slice(5,-7)}` : `created at ${created_at.slice(5,-7)}`}
+            {updated_at
+              ? `updated at: ${updated_at.slice(5, -7)}`
+              : `created at ${created_at.slice(5, -7)}`}
           </p>
         </div>
       ) : (

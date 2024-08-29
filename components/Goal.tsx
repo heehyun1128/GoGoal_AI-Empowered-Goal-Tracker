@@ -20,6 +20,7 @@ const Goal = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [changed, setChanged] = useState(false);
+  const [listView, setListView] = useState(false);
   const [quote, setQuote] = useState("");
   const [dueToday, setDueToday] = useState("");
 
@@ -45,10 +46,20 @@ for the user to achive or set up a goal`
     setQuote(quote.data.quote);
   };
   const getDueToday = async () => {
-    console.log(JSON.stringify(goals));
+    const formatDate = (date: any) => {
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
+      const day = String(date.getDate()).padStart(2, "0");
+      const year = date.getFullYear();
+
+      return `${month}-${day}-${year}`;
+    };
+
+    const todayDate = formatDate(new Date());
+
     const dueToday = await axios.post(
       "/api/quote",
-      `You are provided with a list of goals, each having a due date. Your task is to find and return the titles of ALL goals that are due today. The list is an array of objects structured as follows:
+      `You are provided with a list of goals which is ${goals}, each having a due_date. Your task is to find and return the titles of **all** goals that are due today. 
+      The list is an array of objects structured as follows:
     
       [
         {
@@ -63,14 +74,21 @@ for the user to achive or set up a goal`
         ...
       ]
     
-      Given the following array of goals, return the titles of the goals that have a due date matching today's date. 
+      The current date is ${todayDate}. Check if the "due_date" property of each object in this  array: ${JSON.stringify(
+        goals.map((goal) => ({
+          due_date: goal.due_date,
+          title: goal.title,
+        }))
+      )} matches "${todayDate}".
+      If it does, return the titles of those goals. If multiple goals are due today, list all of them in a single response.
     
-      Goals array: ${JSON.stringify(goals)}
+      
     
-      Return the result in a single sentence using the format: "Due today: ..." (include the titles of the goals). If no goals are due today, simply respond with: "No goals are due today." Do not provide any explanations or additional text, only the sentence in the specified format.
+      Return the result using the format: " Goal A --- Goal B"
+      If no goals are due today, simply respond with: "No goals are due today." Do not provide any explanations or additional text.
       `
     );
-    
+
     setDueToday(dueToday.data.quote);
   };
 
@@ -93,9 +111,9 @@ for the user to achive or set up a goal`
 
   useEffect(() => {
     if (goals.length > 0) {
-      getDueToday(); 
+      getDueToday();
     }
-  }, [goals]);
+  }, [goals, changed]);
 
   const addGoal = () => {
     setModalOpen(true);
@@ -115,11 +133,15 @@ for the user to achive or set up a goal`
     setChanged(!changed);
   };
 
+  const seeListView = () => {
+    setListView(!listView);
+  };
+
   return (
     <div className="w-screen p-5 lg:p-20">
       <div className="flex flex-col sm:flex-row justify-between ">
         <button
-          className="px-6 py-2 rounded-lg flex items-center justify-center text-black mb-8 fade-in-bottom mr-6 "
+          className="px-6 py-2 rounded-lg flex items-center justify-center text-black mb-8 fade-in-bottom mr-6"
           style={{ backgroundColor: "black", height: "40px" }}
           onClick={addGoal}
         >
@@ -143,94 +165,132 @@ for the user to achive or set up a goal`
         </div>
       </div>
       <div>
-        <h4 className="font-bold">DUE TODAY</h4>
-        <div>{dueToday}</div>
+        <h4 className="font-bold mb-4 text-focus-in">DUE TODAY</h4>
+        <ul className="list-disc pl-5">
+          {dueToday.split("---").map((due, index) => (
+            <li key={index} className="mb-2">
+              {due}
+            </li>
+          ))}
+        </ul>
       </div>
-      <div className="flex flex-col sm:flex-row ">
-        <div className="custom-card text-focus-in">
-          <h1 className="rounded p-4 shadow-md bg-red-400 ">Not Started</h1>
-          {goals?.length ? (
-            goals
-              .filter((goal) => goal.status === "Not Started")
-              .map((goal) => (
-                <GoalCard
-                  key={goal?._id}
-                  id={goal?._id}
-                  initialTitle={goal?.title}
-                  initialContent={goal?.content}
-                  initialStatus={goal?.status}
-                  initialDueDate={goal?.due_date}
-                  updated_at={goal?.updated_at}
-                  created_at={goal?.created_at}
-                  onStatusChange={updateGoalStatus}
-                />
-              ))
-          ) : (
-            <div className="no-goal">
-              <h2 className="bg-transparent">No goals to display.</h2>
-              <h2 className="bg-transparent">Start by creating a new goal!</h2>
-            </div>
-          )}
+      <button
+        className="px-6 py-2 rounded-lg flex items-center justify-center text-black mb-8 fade-in-bottom mr-6 "
+        style={{ backgroundColor: "black", height: "40px" }}
+        onClick={seeListView}
+      >
+        <p
+          className="mr-4 hidden  lg:block"
+          style={{ backgroundColor: "black", color: "white" }}
+        >
+          List View
+        </p>
+        <div className="bg-black p-1 ">
+        <i className="fa-solid bg-black text-white  fa-list"></i>
         </div>
-        <div className="custom-card text-focus-in">
-          <h1 className="rounded p-4 shadow-md bg-yellow-500">In Progress</h1>
-          {goals?.length ? (
-            goals
-              .filter((goal) => goal.status === "In Progress")
-              .map((goal) => (
-                <GoalCard
-                  key={goal?._id}
-                  id={goal?._id}
-                  initialTitle={goal?.title}
-                  initialContent={goal?.content}
-                  initialStatus={goal?.status}
-                  initialDueDate={goal?.due_date}
-                  onStatusChange={updateGoalStatus}
-                  updated_at={goal?.updated_at}
-                  created_at={goal?.created_at}
-                />
-              ))
-          ) : (
-            <div className="no-goal">
-              <h2 className="bg-transparent">
-                You currently have no goals in progress.
-              </h2>
-              <h2 className="bg-transparent">
-                Let&apos; start a new one today!
-              </h2>
-            </div>
-          )}
+      </button>
+      {!listView && (
+        <div className="flex flex-col sm:flex-row ">
+          <div className="custom-card text-focus-in">
+            <h1 className="rounded p-4 shadow-md bg-red-400 ">Not Started</h1>
+            {goals?.length ? (
+              goals
+                .filter((goal) => goal.status === "Not Started")
+                .map((goal) => (
+                  <GoalCard
+                    key={goal?._id}
+                    id={goal?._id}
+                    initialTitle={goal?.title}
+                    initialContent={goal?.content}
+                    initialStatus={goal?.status}
+                    initialDueDate={goal?.due_date}
+                    updated_at={goal?.updated_at}
+                    created_at={goal?.created_at}
+                    onStatusChange={updateGoalStatus}
+                  />
+                ))
+            ) : (
+              <div className="no-goal">
+                <h2 className="bg-transparent">No goals to display.</h2>
+                <h2 className="bg-transparent">
+                  Start by creating a new goal!
+                </h2>
+              </div>
+            )}
+          </div>
+          <div className="custom-card text-focus-in">
+            <h1 className="rounded p-4 shadow-md bg-yellow-500">In Progress</h1>
+            {goals?.length ? (
+              goals
+                .filter((goal) => goal.status === "In Progress")
+                .map((goal) => (
+                  <GoalCard
+                    key={goal?._id}
+                    id={goal?._id}
+                    initialTitle={goal?.title}
+                    initialContent={goal?.content}
+                    initialStatus={goal?.status}
+                    initialDueDate={goal?.due_date}
+                    onStatusChange={updateGoalStatus}
+                    updated_at={goal?.updated_at}
+                    created_at={goal?.created_at}
+                  />
+                ))
+            ) : (
+              <div className="no-goal">
+                <h2 className="bg-transparent">
+                  You currently have no goals in progress.
+                </h2>
+                <h2 className="bg-transparent">
+                  Let&apos; start a new one today!
+                </h2>
+              </div>
+            )}
+          </div>
+          <div className="custom-card text-focus-in">
+            <h1 className="rounded p-4 shadow-md bg-green-500 ">Completed</h1>
+            {goals?.length ? (
+              goals
+                .filter((goal) => goal.status === "Completed")
+                .map((goal) => (
+                  <GoalCard
+                    key={goal?._id}
+                    id={goal?._id}
+                    initialTitle={goal?.title}
+                    initialContent={goal?.content}
+                    initialStatus={goal?.status}
+                    initialDueDate={goal?.due_date}
+                    updated_at={goal?.updated_at}
+                    created_at={goal?.created_at}
+                    onStatusChange={updateGoalStatus}
+                  />
+                ))
+            ) : (
+              <div className="no-goal">
+                <h2 className="bg-transparent">
+                  You currently have no completed goals.
+                </h2>
+                <h2 className="bg-transparent">
+                  Ready to start a new one today?
+                </h2>
+              </div>
+            )}
+          </div>
         </div>
-        <div className="custom-card text-focus-in">
-          <h1 className="rounded p-4 shadow-md bg-green-500 ">Completed</h1>
-          {goals?.length ? (
-            goals
-              .filter((goal) => goal.status === "Completed")
-              .map((goal) => (
-                <GoalCard
-                  key={goal?._id}
-                  id={goal?._id}
-                  initialTitle={goal?.title}
-                  initialContent={goal?.content}
-                  initialStatus={goal?.status}
-                  initialDueDate={goal?.due_date}
-                  updated_at={goal?.updated_at}
-                  created_at={goal?.created_at}
-                  onStatusChange={updateGoalStatus}
-                />
-              ))
-          ) : (
-            <div className="no-goal">
-              <h2 className="bg-transparent">
-                You currently have no completed goals.
-              </h2>
-              <h2 className="bg-transparent">
-                Ready to start a new one today?
-              </h2>
-            </div>
-          )}
-        </div>
+      )}
+     {listView && (
+  <div className="text-focus-in">
+    {goals.sort((a:Goal, b:Goal) => new Date(b.due_date).getTime() - new Date(a.due_date).getTime()).map((goal) => (
+      <div className="bg-white rounded mb-2 p-4" key={goal._id}>
+        <strong className="bg-white">Title:</strong> {goal.title} <br />
+        <strong className="bg-white">Content:</strong> {goal.content} <br />
+        <strong className="bg-white">Status:</strong> {goal.status} <br />
+        <strong className="bg-white">Due Date:</strong> {goal.due_date}
       </div>
+    ))}
+  </div>
+)}
+
       <GoalModal
         isOpen={modalOpen}
         onClose={closeModal}
