@@ -34,6 +34,7 @@ const GoalModal: React.FC<GoalModalProps> = ({
       newError.title = "Title is required";
       hasError = true;
     }
+    // use regular expressions to check if due date is in the required format or null
     const regex = /^\d{2}-\d{2}-\d{4}$/;
 
     if (dueDate && !regex.test(dueDate)) {
@@ -48,7 +49,7 @@ const GoalModal: React.FC<GoalModalProps> = ({
 
     setError(null);
 
-    console.log(error);
+    // console.log(error);
     try {
       const res = await axios.post("http://127.0.0.1:5000/new", {
         title,
@@ -56,8 +57,8 @@ const GoalModal: React.FC<GoalModalProps> = ({
         status: status || "Not Started",
         due_date: dueDate || "No Due Date",
       });
-      console.log(res);
-
+      
+// clear form upon data submission
       setTitle("");
       setContent("");
       setStatus("");
