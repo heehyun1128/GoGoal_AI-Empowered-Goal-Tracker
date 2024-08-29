@@ -73,7 +73,7 @@ const GoalCard: React.FC<GoalCardProps> = ({
     }
     const regex = /^\d{2}-\d{2}-\d{4}$/;
 
-    if (!regex.test(dueDate)) {
+    if (dueDate && !regex.test(dueDate) ) {
       newError.dueDate = "Date should be in MM-DD-YYYY format";
       hasError = true;
     }
