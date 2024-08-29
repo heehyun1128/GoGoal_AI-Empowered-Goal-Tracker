@@ -51,7 +51,7 @@ const GoalModal: React.FC<GoalModalProps> = ({
 
     // console.log(error);
     try {
-      const res = await axios.post("http://127.0.0.1:5000/new", {
+      const res = await axios.post("https://goal-tracker-seven.vercel.app/new", {
         title,
         content,
         status: status || "Not Started",

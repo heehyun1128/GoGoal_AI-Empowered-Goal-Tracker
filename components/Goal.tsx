@@ -27,7 +27,7 @@ const Goal = () => {
   const el = useRef(null);
   const fetchGoals = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:5000");
+      const res = await axios.get("https://goal-tracker-seven.vercel.app");
      
       setGoals(res.data);
 
