@@ -1,8 +1,10 @@
-## GoGoal
-See live on:
-    https://goal-tracker-seven.vercel.app/
-    
-Goal Tracker with AI motivational quotes
+# GoGoal: AI-empowered Goal Tracker 
+
+## See live on
+
+- https://goal-tracker-seven.vercel.app/
+
+## Technologies Used
 
 - FRONT-END: 
     
@@ -11,6 +13,29 @@ Goal Tracker with AI motivational quotes
 - BACK-END: 
     
     Python, Flask, Pymongo, MongoDB, OpenAI, NextJS
+
+## Run Locally
+- Project Setup
+
+    Get your API keys from MongoDB and OpenAI & Add the following api keys in .env file:
+
+    - MONGODB_URL=your mongodb connection key
+    - OPENAI_API_KEY=your open ai key
+  
+- To start frontend
+  
+    ```
+    npm install
+    npm run dev
+    ```
+- To start backend
+  
+    ```
+    pip install pipenv
+    pipenv shell
+    pipenv install
+    flask run
+    ``` 
 
 ## Deploy on Vercel
 

@@ -86,7 +86,7 @@ const GoalCard: React.FC<GoalCardProps> = ({
     setError(null);
     try {
       setIsSubmitted(true);
-      
+      // update goal
       const updatedGoal = await axios.put(`http://127.0.0.1:5000/${id}`, {
         title,
         content,

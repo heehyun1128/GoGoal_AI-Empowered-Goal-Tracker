@@ -28,7 +28,7 @@ const Goal = () => {
   const fetchGoals = async () => {
     try {
       const res = await axios.get("http://127.0.0.1:5000");
-      console.log(res.data);
+     
       setGoals(res.data);
 
       return res.data;
@@ -42,12 +42,12 @@ const Goal = () => {
       `create one sentence or maximum of three sentences of motivational quotes
 for the user to achive or set up a goal`
     );
-    console.log(quote.data.quote);
+    // console.log(quote.data.quote);
     setQuote(quote.data.quote);
   };
   const getDueToday = async () => {
     const formatDate = (date: any) => {
-      const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
+      const month = String(date.getMonth() + 1).padStart(2, "0"); 
       const day = String(date.getDate()).padStart(2, "0");
       const year = date.getFullYear();
 
@@ -56,6 +56,7 @@ for the user to achive or set up a goal`
 
     const todayDate = formatDate(new Date());
 
+    // send user prompt to OpenAI to check for goals that are due on the current date
     const dueToday = await axios.post(
       "/api/quote",
       `You are provided with a list of goals which is ${goals}, each having a due_date. Your task is to find and return the titles of **all** goals that are due today. 
@@ -92,6 +93,7 @@ for the user to achive or set up a goal`
     setDueToday(dueToday.data.quote);
   };
 
+  // animated text
   useEffect(() => {
     const typed = new Typed(el.current, {
       strings: [`${quote}`],
@@ -104,11 +106,13 @@ for the user to achive or set up a goal`
     };
   }, [quote]);
 
+  // fetch goals and generate AI motivational quotes upon page load
   useEffect(() => {
     fetchGoals();
     generateQuote();
   }, [changed]);
 
+  // fetch goals due today upon data changes
   useEffect(() => {
     if (goals.length > 0) {
       getDueToday();
