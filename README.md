@@ -1,9 +1,5 @@
 # GoGoal: AI-empowered Goal Tracker 
 
-## See live on
-
-- https://goal-tracker-seven.vercel.app/
-
 ## Technologies Used
 
 - FRONT-END: 
