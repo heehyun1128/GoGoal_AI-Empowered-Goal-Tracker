@@ -10,6 +10,10 @@
     
     Python, Flask, Pymongo, MongoDB, OpenAI, NextJS
 
+## Legal
+All rights reserved. You may not use, distribute, or reproduce any part of this repository without the owner's explicit written permission.
+You must notify the owner before using this repository in any way.
+
 ## Run Locally
 - Project Setup
 
